@@ -1,0 +1,33 @@
+name: Baseline CI
+
+on:
+  workflow_dispatch:
+
+jobs:
+  baseline:
+    name: baseline
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Compose baseline report
+        run: |
+          mkdir -p artifact
+          {
+            echo "Baseline CI run report"
+            echo "Generated: $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+            echo "Runner: ubuntu-latest"
+            echo "Repository: $GITHUB_REPOSITORY"
+            echo "Run ID: $GITHUB_RUN_ID"
+            echo
+            echo "---- NOTES.md (start) ----"
+            cat NOTES.md
+            echo "---- NOTES.md (end) ----"
+          } > artifact/baseline-report.txt
+
+      - name: Upload baseline report
+        uses: actions/upload-artifact@v4
+        with:
+          name: baseline-report
+          path: artifact/baseline-report.txt
